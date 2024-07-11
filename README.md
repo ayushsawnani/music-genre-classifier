@@ -37,7 +37,12 @@ cd music-genre-classifier
 - Json
 
 ## Current
-The neural network has finished training, however I have encountered a problem known as **overfitting**, or "when an algorithm fits too closely or even exactly to its training data, resulting in a model that can't make accurate predictions or conclusions from any data other than the training data" (IBM).
+Using an input layer, 3 hidden layers, and an output layer, I have finished training the dataset.
+<img width="621" alt="Training" src="https://github.com/ayushsawnani/music-genre-classifier/assets/81490699/afe86d08-f14e-403d-b665-93d9afcaae91">
+
+The neural network has finished training, however I have encountered a problem known as **overfitting**, or "when an algorithm fits too closely or even exactly to its training data, resulting in a model that can't make accurate predictions or conclusions from any data other than the training data" (IBM). The greatest indicator of this is the "accuracy" being above 98%, while the validation accuracy, otherwise known as the accuracy on the testing data, is just under 59%.
+<img width="826" alt="Overfitting" src="https://github.com/ayushsawnani/music-genre-classifier/assets/81490699/c5e4e4a2-66d7-428e-a1c1-722b45fab82d">
+
 I will continue to work on this project to solve overfitting.
 
 ## Future
