@@ -2,6 +2,7 @@ import json
 import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
+import matplotlib.pyplot as plot
 
 DATASET_PATH = "data.json"
 
@@ -25,6 +26,27 @@ def generate_dataset(x, y, test_size):
     return x_train, x_test, y_train, y_test
 
 
+def plot_history(history):
+    figure, axis = plot.subplots(2)
+
+    # create accuracy subplot
+    axis[0].plot(history.history["accuracy"], label="train accuracy")
+    axis[0].plot(history.history["val_accuracy"], label="test accuracy")
+    axis[0].set_ylabel("Accuracy")
+    axis[0].legend(loc="lower right")
+    axis[0].set_title("Accuracy eval")
+
+    # create error subplot
+    axis[1].plot(history.history["loss"], label="train error")
+    axis[1].plot(history.history["val_loss"], label="test error")
+    axis[1].set_ylabel("Error")
+    axis[1].set_xlabel("Epoch")
+    axis[1].legend(loc="upper right")
+    axis[1].set_title("Error eval")
+
+    plot.show()
+
+
 if __name__ == "__main__":
     inputs, targets = load_data(DATASET_PATH)
 
@@ -41,11 +63,26 @@ if __name__ == "__main__":
                 input_shape=(inputs.shape[1], inputs.shape[2]),
             ),
             # 1st hidden layer
-            tf.keras.layers.Dense(512, activation="relu"),
+            tf.keras.layers.Dense(
+                512,
+                activation="relu",
+                kernel_regularizer=tf.keras.regularizers.l2(0.001),
+            ),
+            tf.keras.layers.Dropout(0.3),
             # 2nd
-            tf.keras.layers.Dense(256, activation="relu"),
+            tf.keras.layers.Dense(
+                256,
+                activation="relu",
+                kernel_regularizer=tf.keras.regularizers.l2(0.001),
+            ),
+            tf.keras.layers.Dropout(0.3),
             # 3rd
-            tf.keras.layers.Dense(64, activation="relu"),
+            tf.keras.layers.Dense(
+                64,
+                activation="relu",
+                kernel_regularizer=tf.keras.regularizers.l2(0.001),
+            ),
+            tf.keras.layers.Dropout(0.3),
             # output layer (softmax just sums the value and normalizes it to 1 (highest value))
             tf.keras.layers.Dense(10, activation="softmax"),
         ]
@@ -61,13 +98,18 @@ if __name__ == "__main__":
     model.summary()
 
     # train network
-    model.fit(
+    history = model.fit(
         inputs_train,
         targets_train,
         validation_data=(inputs_test, targets_test),
         epochs=50,
         batch_size=32,
     )
+
+    # plot accuracy and error over the epochs
+
+    plot_history(history)
+
     # evaluate model
 
     # make predictions
