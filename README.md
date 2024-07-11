@@ -23,7 +23,6 @@ cd music-genre-classifier
    python genre_classifier.py
    ```
 
-
 ## Dependencies
 
 - TensorFlow
@@ -36,7 +35,7 @@ cd music-genre-classifier
 
 ### Loading Data
 
-The ```load_data``` function loads the dataset from the JSON file and converts it into numpy arrays for inputs (MFCC features) and targets (genre labels).
+The `load_data` function loads the dataset from the JSON file and converts it into numpy arrays for inputs (MFCC features) and targets (genre labels).
 
 ```
 def load_data(dataset_path):
@@ -51,7 +50,8 @@ def load_data(dataset_path):
 ```
 
 ### Splitting Data
-The ```generate_dataset``` function splits the data into training and testing sets using an 70/30 split.
+
+The `generate_dataset` function splits the data into training and testing sets using an 70/30 split.
 
 ```
 def generate_dataset(x, y, test_size):
@@ -60,6 +60,7 @@ def generate_dataset(x, y, test_size):
 ```
 
 ### Building the Neural Network
+
 The neural network is built using Keras' Sequential API. It consists of several dense layers with ReLU activation and dropout for regularization.
 
 ```
@@ -76,6 +77,7 @@ model = tf.keras.Sequential([
 ```
 
 ### Compiling and Training the Model
+
 The model is compiled with the Adam optimizer, sparse categorical cross-entropy loss, and accuracy as a metric. It is then trained for 50 epochs with a batch size of 32.
 
 ```
@@ -86,7 +88,8 @@ history = model.fit(inputs_train, targets_train, validation_data=(inputs_test, t
 ```
 
 ### Plotting Training History
-The ```plot_history``` function plots the accuracy and error over the epochs for both training and validation sets.
+
+The `plot_history` function plots the accuracy and error over the epochs for both training and validation sets.
 
 ```
 def plot_history(history):
@@ -106,8 +109,6 @@ def plot_history(history):
 
     plot.show()
 ```
-
-
 
 ## Progress
 
@@ -147,4 +148,4 @@ A special thank you to Valerio Velardo and his incredible YouTube course, [Deep 
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License.
