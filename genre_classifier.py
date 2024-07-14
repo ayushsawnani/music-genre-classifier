@@ -109,7 +109,3 @@ if __name__ == "__main__":
     # plot accuracy and error over the epochs
 
     plot_history(history)
-
-    # evaluate model
-
-    # make predictions
