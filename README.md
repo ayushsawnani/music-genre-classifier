@@ -61,6 +61,7 @@ def generate_dataset(x, y, test_size):
 
 ### Building the Neural Network
 
+#### MLP (Multi-Layer Perception)
 The neural network is built using Keras' Sequential API. It consists of several dense layers with ReLU activation and dropout for regularization.
 
 ```
@@ -76,6 +77,64 @@ model = tf.keras.Sequential([
 ])
 ```
 
+#### CNN (Convolutional Neural Network)
+A convolutional neural network (CNN) consists of multiple convolutional and max-pooling layers, batch normalization, followed by dense and dropout layers. It uses a kernel, or a filter, that is applied to the spectrogram to detect certain features. Pooling is used to control overfitting and computer load by downsampling the spectrogram. Max pooling retains the most significant feature while reducing the size of the map.
+
+```
+
+# create model
+    model = keras.Sequential()
+
+    # CNN with 3 convutional layers followed by max pooling layer
+    # # of filters, kernel size
+    model.add(
+        keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=input_shape)
+    )
+    model.add(
+        # kernel size
+        keras.layers.MaxPool2D(
+            (3, 3),
+            strides=(2, 2),
+            padding="same",
+        )
+    )
+    model.add(keras.layers.BatchNormalization())
+
+    model.add(
+        keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=input_shape)
+    )
+    model.add(
+        keras.layers.MaxPool2D(
+            (3, 3),
+            strides=(2, 2),
+            padding="same",
+        )
+    )
+    model.add(keras.layers.BatchNormalization())
+
+    model.add(
+        keras.layers.Conv2D(32, (2, 2), activation="relu", input_shape=input_shape)
+    )
+    model.add(
+        keras.layers.MaxPool2D(
+            (2, 2),
+            strides=(2, 2),
+            padding="same",
+        )
+    )
+    model.add(keras.layers.BatchNormalization())
+
+    # flatten out and feed into dense layer
+    model.add(keras.layers.Flatten())
+    model.add(keras.layers.Dense(64, activation="relu"))
+    model.add(keras.layers.Dropout(0.3))
+
+    # output layer
+    model.add(keras.layers.Dense(10, activation="softmax"))
+
+```
+
+
 ### Compiling and Training the Model
 
 The model is compiled with the Adam optimizer, sparse categorical cross-entropy loss, and accuracy as a metric. It is then trained for 50 epochs with a batch size of 32.
@@ -87,7 +146,7 @@ model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metri
 history = model.fit(inputs_train, targets_train, validation_data=(inputs_test, targets_test), epochs=50, batch_size=32)
 ```
 
-### Plotting Training History
+### Plotting Training History (MLP ONLY)
 
 The `plot_history` function plots the accuracy and error over the epochs for both training and validation sets.
 
@@ -138,9 +197,23 @@ These techniques helped improve the model's generalization to unseen data.
 
 The new graphs show a smaller difference from the training set to the testing set.
 
+### Upgrading to a Convolutional Neural Network (CNN)
+
+To improve the performance of the music genre classifier, I implemented a convolutional neural network (CNN) instead of a traditional multi-layer perceptron (MLP). The CNN was chosen because it excels at capturing spatial and temporal patterns, making it more suitable for processing audio spectrograms derived from 30-second music samples. 
+
+<img width="883" alt="Screenshot 2024-07-14 at 3 44 10 PM" src="https://github.com/user-attachments/assets/a9dd8650-8d57-4440-af8e-297097bfc68c">
+<img width="883" alt="Screenshot 2024-07-14 at 3 38 50 PM" src="https://github.com/user-attachments/assets/8e64b492-27b9-4b29-826e-b5f6087fafc2">
+
+Network | Accuracy
+:---: | :---:
+MLP | 18.66%
+CNN | 71.60%
+
+This approach significantly improved the model's ability to recognize and classify complex audio patterns, resulting in higher accuracy for music genre prediction.
+
 ## Future
 
-I would like to implement a CNN (Convolutional Neural Network) and an RNN-LSTM (Recurrent Neural Network - Long Term Short Memory Network) to predict data more accurately.
+I would like to implement a RNN-LSTM (Recurrent Neural Network - Long Term Short Memory Network) to predict audio data more accurately.
 
 ## Acknowledgements
 
