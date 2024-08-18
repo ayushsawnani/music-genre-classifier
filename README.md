@@ -28,8 +28,10 @@ cd music-genre-classifier
 - TensorFlow
 - Keras
 - scikit-learn
+- librosa
 - NumPy
 - Json
+- Flask
 
 ## Code Overview
 
@@ -211,9 +213,141 @@ CNN | 71.60%
 
 This approach significantly improved the model's ability to recognize and classify complex audio patterns, resulting in higher accuracy for music genre prediction.
 
+### Implementing an RNN-LSTM
+To further enhance the model's performance, I implemented a Recurrent Neural Network with Long Short-Term Memory (RNN-LSTM). This architecture is particularly well-suited for sequential data, such as audio, as it can capture temporal dependencies more effectively than other models. The LSTM layers help the model remember long-term patterns, which is crucial for accurately predicting music genres over time.
+
+The RNN-LSTM model architecture includes:
+
+LSTM Layers: Stacked LSTM layers with dropout to handle the sequential nature of the audio data.
+Dense Layers: Fully connected layers to map the learned features to the genre labels.
+
+```
+def build_model(input_shape):
+
+    # create model
+    model = keras.Sequential()
+
+    # 2 LSTM layers
+    model.add(
+        keras.layers.LSTM(
+            64,
+            input_shape=input_shape,
+            return_sequences=True,
+        )
+    )
+    model.add(keras.layers.LSTM(64))
+
+    # dense layer
+    model.add(keras.layers.Dense(64, activation="relu"))
+    model.add(keras.layers.Dropout(0.3))
+
+    # output layer
+    model.add(keras.layers.Dense(10, activation="softmax"))
+
+    return model
+
+```
+
+This RNN-LSTM architecture should allow the model to achieve even better accuracy on music genre classification. However, it's crucial to monitor the training process to prevent overfitting and ensure that the model generalizes well to unseen data.
+
+The training results and accuracy metrics will be added after completing the experiments.
+
+
+## Deploying the Music Genre Classifier as a Web App with Flask
+
+To make the Music Genre Classifier accessible to users, I created a web application using Python's Flask framework, along with HTML and CSS for the frontend. This web app allows users to upload their own audio files, and the trained model will predict the genre of the uploaded music.
+
+### Building the Web App
+
+The web app consists of two main components:
+
+Upload Form (HTML): A simple HTML form for uploading audio files.
+Prediction Logic (Flask): Python code to handle the uploaded file, preprocess it, and use the trained model to predict the genre.
+
+
+#### HTML Upload Form
+
+Created an index.html file to serve as the main page of the web app. This page includes an upload form where users can select and submit their audio files.
+
+```
+<body>
+    <div class="container">
+        <h1>Music Genre Classifier</h1>
+        {% if result %}
+            <div class="result">
+                Predicted Genre: {{ result }}
+            </div>
+        {% endif %}
+        <form method='POST' enctype='multipart/form-data'>
+            {{form.hidden_tag()}}
+            <label for="file">{% if result %}Choose another audio file{% else %}Choose an audio file{% endif %}</label>
+            {{form.file(id="file", onchange="updateFileName(this)")}}
+            <div class="file-name" id="file-name"></div>
+            {{form.submit()}}
+        </form>
+    </div>
+
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0].name;
+            document.getElementById('file-name').textContent = fileName;
+        }
+    </script>
+</body>
+```
+
+#### Running the application using Flask
+In app.py, define the Flask routes and the prediction logic. The /home route handles file upload, processes the audio file, and predicts the genre using the trained model.
+
+```
+
+@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
+def home():
+    form = UploadFileForm()
+    result = None
+    if form.validate_on_submit():
+        file = form.file.data
+        folder = "test_song"
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print("Failed to delete %s. Reason: %s" % (file_path, e))
+        file.save(
+            os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                app.config["UPLOAD_FOLDER"],
+                secure_filename(file.filename),
+            )
+        )
+        # run the neural network here
+        result = test.run()
+    return render_template("index.html", form=form, result=result)
+
+```
+
+
+Visit http://127.0.0.1:5000/ in your web browser to access the web app.
+
+
+
+### Future Enhancements
+- Error Handling: Implement more robust error handling for unsupported file types or corrupted audio files.
+- Enhanced UI/UX: Improve the user interface with more detailed prediction results and visualizations.
+- Deployment: Deploy the Flask app to a cloud platform like Heroku or AWS for broader accessibility.
+
+
+https://github.com/user-attachments/assets/d30641c3-1820-4249-83ef-197d17e9ea00
+
+
 ## Future
 
-I would like to implement a RNN-LSTM (Recurrent Neural Network - Long Term Short Memory Network) to predict audio data more accurately.
+I would like to further refine the model by optimizing hyperparameters, experimenting with different RNN variants, and potentially incorporating data augmentation techniques to enhance the dataset's diversity.
 
 ## Acknowledgements
 
