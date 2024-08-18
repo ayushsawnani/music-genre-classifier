@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Genre Classifier</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://cdnjs.cloudflare.com/ajax/libs/simple-icons/3.0.1/soundcloud.svg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container {
+            background-color: rgba(51, 51, 51, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #1DB954;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label {
+            background-color: #1DB954;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        label:hover {
+            background-color: #1ed760;
+        }
+        input[type="submit"] {
+            background-color: #ffffff;
+            color: #1a1a1a;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        input[type="submit"]:hover {
+            background-color: #1DB954;
+            color: white;
+        }
+        .file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(29, 185, 84, 0.1);
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Genre Classifier</h1>
+        {% if result %}
+            <div class="result">
+                Predicted Genre: {{ result }}
+            </div>
+        {% endif %}
+        <form method='POST' enctype='multipart/form-data'>
+            {{form.hidden_tag()}}
+            <label for="file">{% if result %}Choose another audio file{% else %}Choose an audio file{% endif %}</label>
+            {{form.file(id="file", onchange="updateFileName(this)")}}
+            <div class="file-name" id="file-name"></div>
+            {{form.submit()}}
+        </form>
+    </div>
+
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0].name;
+            document.getElementById('file-name').textContent = fileName;
+        }
+    </script>
+</body>
+</html>

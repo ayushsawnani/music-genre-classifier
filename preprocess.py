@@ -65,5 +65,55 @@ def save_mfcc(
         json.dump(data, fp, indent=4)
 
 
+def save_mfcc_single(
+    dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, num_segments=5
+):
+
+    # dictionary to store data
+    data = {"mapping": [], "mfcc": [], "labels": []}
+
+    num_samples_per_segment = int(SAMPLES_PER_TRACK / num_segments)
+    expected_num_mfcc_vectors_per_segment = math.ceil(
+        num_samples_per_segment / hop_length
+    )  # 1.2 -> 2
+
+    # loop through all of the genres
+    file1 = open("genres.txt", "r")
+    Lines = file1.readlines()
+    for line in Lines:
+        data["mapping"].append(line)
+
+    for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
+        for f in filenames:
+            file_path = os.path.join(dirpath, f)
+            signal, sr = librosa.load(file_path, sr=SAMPLE_RATE)
+
+            # process segments extracting mfcc and storing data
+
+            for s in range(num_segments):
+                start_sample = num_samples_per_segment * s  # s=0 -> 0
+                finish_sample = (
+                    start_sample + num_samples_per_segment
+                )  # s=0 -> num_samples-per_segment
+
+                # store mfcc for segment if it has the expected length
+                mfcc = librosa.feature.mfcc(
+                    y=signal[start_sample:finish_sample],
+                    sr=sr,
+                    n_fft=n_fft,
+                    hop_length=hop_length,
+                    n_mfcc=n_mfcc,
+                )  # 13 is commonly used
+
+                mfcc = mfcc.T
+                if len(mfcc) == expected_num_mfcc_vectors_per_segment:
+                    data["mfcc"].append(mfcc.tolist())
+                    data["labels"].append(i - 1)
+                    print("{}, segment:{}".format(file_path, s))
+
+    with open(json_path, "w") as fp:
+        json.dump(data, fp, indent=4)
+
+
 if __name__ == "__main__":
     save_mfcc(DATASET_PATH, JSON_PATH, num_segments=10)

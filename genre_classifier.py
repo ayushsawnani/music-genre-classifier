@@ -102,10 +102,14 @@ if __name__ == "__main__":
         inputs_train,
         targets_train,
         validation_data=(inputs_test, targets_test),
-        epochs=50,
+        epochs=30,
         batch_size=32,
     )
 
     # plot accuracy and error over the epochs
 
     plot_history(history)
+
+    # evaluate model
+    test_error, test_accuracy = model.evaluate(inputs_test, targets_test, verbose=1)
+    print("Accuracy on test set is {}".format(test_accuracy))

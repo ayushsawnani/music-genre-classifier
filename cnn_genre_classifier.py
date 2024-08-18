@@ -128,7 +128,7 @@ if __name__ == "__main__":
     # build CNN
 
     # shape of 3d array
-    inputs_shape = (inputs_train.shape[1], inputs_train.shape[2], inputs_train.shape[3])
+    inputs_shape = (inputs_train.shape[1], inputs_train.shape[2], 1)
     model = build_model(inputs_shape)
 
     # compile network
