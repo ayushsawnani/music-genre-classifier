@@ -347,7 +347,7 @@ https://github.com/user-attachments/assets/d30641c3-1820-4249-83ef-197d17e9ea00
 
 ## Future
 
-I would like to further refine the model by optimizing hyperparameters, experimenting with different RNN variants, and potentially incorporating data augmentation techniques to enhance the dataset's diversity.
+I would like to add more information about a song, such as the bpm and key. I would also like the user to choose which 30 second snippet of the song they'd like to process.
 
 ## Acknowledgements
 
