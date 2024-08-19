@@ -75,7 +75,7 @@
             font-size: 0.9rem;
             color: #cccccc;
         }
-        .result {
+        .prediction {
             margin-top: 1.5rem;
             padding: 1rem;
             background-color: rgba(29, 185, 84, 0.1);
@@ -87,14 +87,14 @@
 <body>
     <div class="container">
         <h1>Music Genre Classifier</h1>
-        {% if result %}
-            <div class="result">
-                Predicted Genre: {{ result }}
+        {% if prediction %}
+            <div class="prediction">
+                Predicted Genre: {{ prediction }}
             </div>
         {% endif %}
         <form method='POST' enctype='multipart/form-data'>
             {{form.hidden_tag()}}
-            <label for="file">{% if result %}Choose another audio file{% else %}Choose an audio file{% endif %}</label>
+            <label for="file">{% if prediction %}Choose another audio file{% else %}Choose an audio file{% endif %}</label>
             {{form.file(id="file", onchange="updateFileName(this)")}}
             <div class="file-name" id="file-name"></div>
             {{form.submit()}}

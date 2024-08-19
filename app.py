@@ -20,7 +20,7 @@ class UploadFileForm(FlaskForm):
 @app.route("/home", methods=["GET", "POST"])
 def home():
     form = UploadFileForm()
-    result = None
+    prediction = None
     if form.validate_on_submit():
         file = form.file.data
         folder = "test_song"
@@ -41,8 +41,8 @@ def home():
             )
         )
         # run the neural network here
-        result = test.run()
-    return render_template("index.html", form=form, result=result)
+        prediction = test.run()
+    return render_template("index.html", form=form, prediction=prediction)
 
 
 if __name__ == "__main__":
